@@ -8,48 +8,64 @@ describe('walkSync', function () {
     var dir = path.join(__dirname, 'walkTest');
 
     // Exercise
-    var list = [];
-    fwalker.walkSync(dir, function (f) {
-      list.push(f);
+    var count = 0;
+    fwalker.walkSync(dir, function () {
+      count++;
     });
 
     // Verify
-    list.length.should.equal(3);
+    count.should.equal(3);
   });
 
-  describe('join', function () {
-    it('should return the relative path of a file or a directory', function () {
-      // Setup
-      var dir = path.join(__dirname, 'walkTest');
+  it('should call the callback with the name as the first argument', function () {
+    // Setup
+    var dir = path.join(__dirname, 'walkTest');
 
-      // Exercise
-      var list = [];
-      fwalker.walkSync(dir, function (f) {
-        list.push(f.join());
-      });
-
-      // Verify
-      list.should.contain('file1.txt');
-      list.should.contain('dir1');
-      list.should.contain('dir1/file2.txt');
+    // Exercise
+    var list = [];
+    fwalker.walkSync(dir, function (name) {
+      list.push(name);
     });
+
+    // Verify
+    list.should.contain('file1.txt');
+    list.should.contain('dir1');
+    list.should.contain('file2.txt');
   });
 
-  describe('joinDir', function () {
-    it('should return the container directory for a file or the relative path for a directory', function () {
-      // Setup
-      var dir = path.join(__dirname, 'walkTest');
+  it('should call the callback with the path as the second argument', function () {
+    // Setup
+    var dir = path.join(__dirname, 'walkTest');
 
-      // Exercise
-      var list = [];
-      fwalker.walkSync(dir, function (f) {
-        list.push(f.joinDir());
-      });
-
-      // Verify
-      list.should.contain('.');
-      list.should.contain('dir1');
-      list.should.contain('dir1');
+    // Exercise
+    var list = [];
+    fwalker.walkSync(dir, function (name, path) {
+      list.push(path);
     });
+
+    // Verify
+    list.should.contain(path.join(dir, 'file1.txt'));
+    list.should.contain(path.join(dir, 'dir1'));
+    list.should.contain(path.join(dir, 'dir1/file2.txt'));
+  });
+
+  it('should call the callback with the value that indicates whether the node is a directory as the third argument', function () {
+    // Setup
+    var dir = path.join(__dirname, 'walkTest');
+
+    // Exercise
+    var directories = 0, nonDirectories = 0;
+    fwalker.walkSync(dir, function (name, path, isDir) {
+      if (isDir) {
+        directories++;
+      }
+      else {
+        nonDirectories++;
+      }
+    });
+
+    // Verify
+    directories.should.equal(1);
+    nonDirectories.should.equal(2);
   });
 });

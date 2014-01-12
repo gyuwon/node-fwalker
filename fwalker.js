@@ -33,34 +33,27 @@ var fs = require('fs')
 function Walker () {
   var self = this;
 
-  var walkSync = function (dir, relative, callback) {
-    var container = path.join(dir, path.join.apply(path, relative));
-    fs.readdirSync(container).forEach(function (name) {
-      var file = path.join(container, name)
-        , isDir = fs.lstatSync(file).isDirectory();
-      callback({
-        relative: relative.slice(0),
-        name: name,
-        isDir: isDir,
-        join: function () {
-          return path.join(path.join.apply(path, this.relative), name);
-        },
-        joinDir: function () {
-          if (this.isDir) {
-            return this.join();
-          }
-          else {
-            return path.join(path.join.apply(path, this.relative));
-          }
-        }
-      });
+  var walkSync = function (dir, trace, callback) {
+    fs.readdirSync(dir).forEach(function (name) {
+      var file = path.join(dir, name)
+        , stat = fs.lstatSync(file)
+        , isDir = stat.isDirectory()
+        , _trace = trace;
+      try {
+        callback(name, file, isDir, function () {
+          return _trace.slice(0);
+        });
+      }
+      finally {
+        _trace = null;
+      }
       if (isDir) {
-        relative.push(name);
+        trace.push(name);
         try {
-          walkSync(dir, relative, callback);
+          walkSync(file, trace, callback);
         }
         finally {
-          relative.pop();
+          trace.pop();
         }
       }
     });
@@ -76,6 +69,9 @@ function Walker () {
    * Returns: The list of information of files contained in 'dir'
    */
   self.walkSync = function (dir, callback) {
+    if (typeof callback != 'function') {
+      throw new Error("'callback' is not a function.");
+    }
     walkSync(dir, [], callback);
   };
 }
