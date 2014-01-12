@@ -41,8 +41,17 @@ function Walker () {
       callback({
         relative: relative.slice(0),
         name: name,
+        isDir: isDir,
         join: function () {
           return path.join(path.join.apply(path, this.relative), name);
+        },
+        joinDir: function () {
+          if (this.isDir) {
+            return this.join();
+          }
+          else {
+            return path.join(path.join.apply(path, this.relative));
+          }
         }
       });
       if (isDir) {
