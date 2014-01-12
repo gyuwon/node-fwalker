@@ -41,7 +41,7 @@ function Walker () {
       callback({
         relative: relative.slice(0),
         name: name,
-        getFullPath: function () {
+        join: function () {
           return path.join(path.join.apply(path, this.relative), name);
         }
       });
