@@ -40,7 +40,10 @@ function Walker () {
         , isDir = fs.lstatSync(file).isDirectory();
       callback({
         relative: relative.slice(0),
-        name: name
+        name: name,
+        getFullPath: function () {
+          return path.join(path.join.apply(path, this.relative), name);
+        }
       });
       if (isDir) {
         relative.push(name);

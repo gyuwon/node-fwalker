@@ -10,7 +10,7 @@ describe('walkSync', function () {
     // Exercise
     var list = [];
     fwalker.walkSync(dir, function (f) {
-      list.push(path.join(path.join.apply(path, f.relative), f.name));
+      list.push(f.getFullPath());
     });
 
     // Verify
