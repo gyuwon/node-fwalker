@@ -1,0 +1,20 @@
+{
+  "name": "node-fwalker",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gyuwon/express-play.git"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "http://opensource.org/licenses/MIT"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "should": "latest",
+    "sinon": "latest",
+    "fromjs": "latest"
+  },
+  "main": "fwalker.js"
+}
