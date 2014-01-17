@@ -1,4 +1,2 @@
-node-fwalker
-============
-
+#node-fwalker
 A simple file traversal module
